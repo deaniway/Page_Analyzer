@@ -2,9 +2,9 @@
 name = "hexlet-code"
 version = "0.1.0"
 description = ""
-authors = ["Denis <ad.way@mail.ri>"]
+authors = ["Denis <ad.way@mail.ru>"]
 readme = "README.md"
-packages = [{include = "hexlet_code"}]
+packages = [{include = "page_analyzer"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
