@@ -1,25 +1,22 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, flash, redirect, url_for
+from page_analyzer.tools_url import validate_url, normalize_url
 import os
-from page_analyzer.db import insert_url
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+DEBUG_SWITCH = os.getenv("DEBUG_SWITCH")
 
 
 @app.route('/')
 def index():
     return render_template('index.html'), 200
 
-
-@app.post('/urls')
-def submit():
-    url = request.form['url']
-    insert_url(url)
-    return redirect(url_for('index'))
-
-
-@app.route('/urls')
-def urls():
-    urls = ["https://example.com", "https://example.org"]
-    return render_template('urls.html', urls=urls)
+@app.post('/url')
+def add_url():
+    url = request.form.get('url')
+    errors = validate_url(url)
+    if errors:
+        for i in errors:
+            flash(*i)
+        return redirect('index.html'), 422
 
