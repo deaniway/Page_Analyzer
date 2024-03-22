@@ -7,18 +7,14 @@ load_dotenv()
 DATABASE_URL = os.getenv('DATABASE_URL')
 
 
-def connect_to_database():
-    try:
-        conn = psycopg2.connect(DATABASE_URL)
-        print("Подключение к базе данных успешно.")
-        return conn
-    except psycopg2.Error as e:
-        print("Ошибка подключения к базе данных:", e)
-        return None
+
+
+def connect_db(app):
+    return psycopg2.connect(app.config['DATABASE_URL'])
 
 
 def add_url(url):
-    conn = connect_to_database()  # Подключение к базе данных
+    conn = connect_db()  # Подключение к базе данных
     if conn:
         cursor = conn.cursor()
         try:
