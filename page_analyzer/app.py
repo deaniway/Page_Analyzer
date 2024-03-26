@@ -1,7 +1,14 @@
-from flask import Flask, render_template, request, flash, redirect, url_for
-from page_analyzer.tools_url import validate_url, normalize_url
-import os
+from flask import (
+    Flask, render_template, request, flash,
+    get_flashed_messages, redirect, url_for
+)
 from dotenv import load_dotenv
+from validators import url as validate
+from page_analyzer.database import DbManager, init_connection
+from page_analyzer.htmlparser import HTMLParser
+from urllib.parse import urlparse
+import os
+import requests
 
 load_dotenv()
 
@@ -10,17 +17,71 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 app.config['DATABASE_URL'] = os.getenv('DATABASE_URL')
 
+manager = DbManager()
+
 
 @app.route('/')
 def index():
+    conn = init_connection()
+    print(conn)
     return render_template('index.html'), 200
 
-@app.post('/url')
-def add_url():
-    url = request.form.get('url')
-    errors = validate_url(url)
-    if errors:
-        for i in errors:
-            flash(*i)
-        return redirect('index.html'), 422
 
+@app.post('/urls')
+def urls():
+    url_chek = request.form.get('url')
+    parse_url = urlparse(url_chek)
+    normal_url = f'{parse_url.scheme}://{parse_url.netloc}'
+    if not validate(normal_url):
+        flash('Кривой URL', 'danger')
+        messages = get_flashed_messages(with_categories=True)
+        return render_template('index.html', messages=messages), 422
+    url_id = manager.get_id_from_url(normal_url)
+    if url_id:
+        flash('Такой URL уже есть', 'warning')
+        return redirect(url_for('get_url_list', id=url_id))
+    url = manager.insert_url(normal_url)
+    flash(f'URL {normal_url} добавлена', 'success')
+    return redirect(url_for('get_url_list', id=url.id))
+
+
+@app.get('/urls')
+def get_user():
+    messages = get_flashed_messages(with_categories=True)
+    all_urls = manager.get_urls_list()
+    return render_template('urls.html', urls=all_urls, messages=messages)
+
+
+@app.get('/urls/<int:id>')
+def get_url_list(id):
+    messages = get_flashed_messages(with_categories=True)
+    url = manager.get_url_from_urls_list(id)
+    if not url:
+        flash('Запрашиваемая страница не найдена', 'warning')
+        return redirect(url_for('index'), 404)
+    checks_list = manager.get_url_from_urls_checks_list(id)
+    return render_template('list.html', messages=messages,
+                           url=url, checks_list=checks_list)
+
+
+@app.post('/urls/<int:id>/check')
+def check_url(id):
+    url = manager.get_url_from_urls_list(id).name
+    if not url:
+        flash('Запрашиваемая страница не найдена', 'warning')
+        return redirect(url_for('index'), 404)
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+    except requests.exceptions.RequestException:
+        flash('Произошла ошибка при проверке', 'danger')
+        return redirect(url_for('get_url_list', id=id, code=400))
+
+    responses_html = response.content
+    soup = HTMLParser(responses_html)
+    check = soup.chek()
+    full_check = dict(check, url_id=id, response=response.status_code)
+
+    manager.insert_url_check(full_check)
+    flash('Страница успешно проверена', 'success')
+    return redirect(url_for('get_url_list', id=id))
