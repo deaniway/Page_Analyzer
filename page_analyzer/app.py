@@ -40,7 +40,7 @@ def urls():
         flash('Страница уже существует', 'warning')
         return redirect(url_for('get_url_list', id=url_id))
     url = manager.insert_url(normal_url)
-    flash(f'Страница успешно добавлена', 'success')
+    flash('Страница успешно добавлена', 'success')
     return redirect(url_for('get_url_list', id=url.id)), 200
 
 
