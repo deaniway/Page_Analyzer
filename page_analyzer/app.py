@@ -23,7 +23,6 @@ manager = DbManager()
 @app.route('/')
 def index():
     conn = init_connection()
-    print(conn)
     return render_template('index.html'), 200
 
 
@@ -49,7 +48,7 @@ def urls():
 def get_user():
     messages = get_flashed_messages(with_categories=True)
     all_urls = manager.get_urls_list()
-    return render_template('urls.html', urls=all_urls, messages=messages)
+    return render_template('urls.html', urls=all_urls, messages=messages), 200
 
 
 @app.get('/urls/<int:id>')
