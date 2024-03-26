@@ -33,7 +33,7 @@ def urls():
     parse_url = urlparse(url_chek)
     normal_url = f'{parse_url.scheme}://{parse_url.netloc}'
     if not validate(normal_url):
-        flash('Кривой URL', 'danger')
+        flash('Некорректный URL', 'danger')
         messages = get_flashed_messages(with_categories=True)
         return render_template('index.html', messages=messages), 422
     url_id = manager.get_id_from_url(normal_url)
@@ -41,7 +41,7 @@ def urls():
         flash('Такой URL уже есть', 'warning')
         return redirect(url_for('get_url_list', id=url_id))
     url = manager.insert_url(normal_url)
-    flash(f'URL {normal_url} добавлена', 'success')
+    flash(f'Страница успешно добавлена', 'success')
     return redirect(url_for('get_url_list', id=url.id))
 
 
