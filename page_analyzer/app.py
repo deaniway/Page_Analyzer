@@ -38,7 +38,7 @@ def urls():
         return render_template('index.html', messages=messages), 422
     url_id = manager.get_id_from_url(normal_url)
     if url_id:
-        flash('Такой URL уже есть', 'warning')
+        flash('Страница уже существует', 'warning')
         return redirect(url_for('get_url_list', id=url_id))
     url = manager.insert_url(normal_url)
     flash(f'Страница успешно добавлена', 'success')
