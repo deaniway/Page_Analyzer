@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
-export DATABASE_URL=postgresql://postgres:postgres@localhost:5432/database
+export DATABASE_URL=postgresql://pguser:pgpass@localhost:5433/pgdb
 make install && psql -a -d $DATABASE_URL -f database.sql
+
+
