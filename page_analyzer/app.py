@@ -4,7 +4,7 @@ from flask import (
 )
 from dotenv import load_dotenv
 from validators import url as validate
-from page_analyzer.db import DbManager, init_connection
+from page_analyzer.db import DbManager
 from page_analyzer.html_parser import HTMLParser
 from urllib.parse import urlparse
 import os
