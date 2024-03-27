@@ -41,7 +41,7 @@ def urls():
         return redirect(url_for('get_url_list', id=url_id))
     url = manager.insert_url(normal_url)
     flash('Страница успешно добавлена', 'success')
-    return redirect(url_for('get_url_list', id=url.id)), 200
+    return redirect(url_for('get_url_list', id=url.id))
 
 
 @app.get('/urls')
