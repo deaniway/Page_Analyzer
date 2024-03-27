@@ -22,8 +22,8 @@ manager = DbManager()
 
 @app.route('/')
 def index():
-    conn = init_connection()
-    return render_template('index.html'), 200
+    messages = get_flashed_messages(with_categories=True)
+    return render_template('index.html', messages=messages), 200
 
 
 @app.post('/urls')
@@ -41,14 +41,14 @@ def urls():
         return redirect(url_for('get_url_list', id=url_id))
     url = manager.insert_url(normal_url)
     flash('Страница успешно добавлена', 'success')
-    return redirect(url_for('get_url_list', id=url.id)), 200
+    return redirect(url_for('get_url_list', id=url.id))
 
 
 @app.get('/urls')
 def get_user():
     messages = get_flashed_messages(with_categories=True)
     all_urls = manager.get_urls_list()
-    return render_template('urls.html', urls=all_urls, messages=messages), 200
+    return render_template('urls.html', messages=messages, urls=all_urls), 200
 
 
 @app.get('/urls/<int:id>')
