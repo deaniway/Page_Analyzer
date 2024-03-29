@@ -63,7 +63,7 @@ How can I help develop a project? Submit a pull request :)
 
 ## In the plans
 - [x] Submit README
-- [] Add Сelery to make the application work asynchronously
+- [ ] Add Сelery to make the application work asynchronously
 - [ ] Add functionality to the project
 
 
