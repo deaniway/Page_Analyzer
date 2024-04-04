@@ -12,3 +12,6 @@ coverage.xml
 .ide
 .venv
 test.py
+/.venv/
+
+
