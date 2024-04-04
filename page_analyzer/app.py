@@ -75,9 +75,9 @@ def get_url_list(id):
                            url=url, checks_list=get_checks_by_url_id)
 
 
-@app.post('/urls/<int:id>/check')
-def check_url(id):
-    url_record = manager.get_url_from_urls_list(id)
+@app.post('/urls/<int:url_id>/check')  # Замените id на url_id
+def check_url(url_id):  # Соответственно замените id на url_id
+    url_record = manager.get_url_from_urls_list(url_id)
     if not url_record:
         abort(404)
 
@@ -87,13 +87,13 @@ def check_url(id):
         response.raise_for_status()
     except requests.exceptions.RequestException:
         flash('Произошла ошибка при проверке', 'danger')
-        return redirect(url_for('get_url_list', id=id, code=400))
+        return redirect(url_for('get_url_list', id=url_id, code=400))
 
-    responses_html = response.content
-    soup = HTMLParser(responses_html)
-    check = soup.chek()
-    full_check = dict(check, url_id=id, response=response.status_code)
+    page_content = response.content
+    page_parser = HTMLParser(page_content)
+    page_data = page_parser.get_page_data()
+    full_check = dict(page_data, url_id=url_id, response=response.status_code)
 
     manager.insert_url_check(full_check)
     flash('Страница успешно проверена', 'success')
-    return redirect(url_for('get_url_list', id=id))
+    return redirect(url_for('get_url_list', id=url_id))

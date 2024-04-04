@@ -30,7 +30,7 @@ class HTMLParser:
                 return content[:255]
         return None
 
-    def chek(self):
+    def get_page_data(self):
 
         """Общий результат."""
         result = {
