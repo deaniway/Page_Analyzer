@@ -12,20 +12,14 @@ class HTMLParser:
         """Получает заголовок (title) веб-страницы."""
 
         title_tag = self.soup.title
-        if title_tag:
-            return title_tag.string
-        else:
-            return None
+        return title_tag.string if title_tag else None
 
     def get_h1(self):
 
         """Получает первый заголовок (h1) веб-страницы."""
 
         h1_tag = self.soup.h1
-        if h1_tag:
-            return h1_tag.string
-        else:
-            return None
+        return h1_tag.string if h1_tag else None
 
     def get_content(self):
 
@@ -39,8 +33,9 @@ class HTMLParser:
     def chek(self):
 
         """Общий результат."""
-        result = dict()
-        result['title'] = self.get_title()
-        result['h1'] = self.get_h1()
-        result['content'] = self.get_content()
+        result = {
+            'title': self.get_title(),
+            'h1': self.get_h1(),
+            'content': self.get_content()
+        }
         return result

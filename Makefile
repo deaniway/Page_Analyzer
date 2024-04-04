@@ -16,5 +16,8 @@ build:
 lint:
 	poetry run flake8 page_analyzer
 
-link_psql:
+enter-db:
 	docker exec -it dev_page_analyzer psql -U pguser -d pgdb psql
+
+dev-db:
+	docker-compose up -d
