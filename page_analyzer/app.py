@@ -48,14 +48,15 @@ def show_url_page():
         messages = get_flashed_messages(with_categories=True)
         return render_template('index.html', messages=messages), 422
 
-    url_id = manager.get_url_by_name(normal_url)
-    if url_id:
-        flash('Страница уже существует', 'warning')
-        return redirect(url_for('get_url_list', id=url_id))
+    existed_url = manager.get_url_by_name(normal_url)
 
-    url = manager.insert_url(normal_url)
-    flash('Страница успешно добавлена', 'success')
-    return redirect(url_for('get_url_list', id=url.id))
+    if existed_url:
+        flash('Страница уже существует', 'info')
+        url_id = existed_url.id
+    else:
+        url_id = manager.insert_url(normal_url).id
+        flash('Страница успешно добавлена', 'success')
+    return redirect(url_for('get_url_list', url_id=url_id))
 
 
 @app.get('/urls')
@@ -75,22 +76,20 @@ def get_url_list(id):
                            url=url, checks_list=get_checks_by_url_id)
 
 
-@app.post('/urls/<int:url_id>/check')  # Замените id на url_id
-def check_url(url_id):  # Соответственно замените id на url_id
+@app.post('/urls/<int:url_id>/check')
+def check_url(url_id):
     url_record = manager.get_url_from_urls_list(url_id)
     if not url_record:
         abort(404)
 
-    url = url_record.name
     try:
-        response = requests.get(url)
+        response = requests.get(url_record.name)
         response.raise_for_status()
     except requests.exceptions.RequestException:
         flash('Произошла ошибка при проверке', 'danger')
         return redirect(url_for('get_url_list', id=url_id, code=400))
 
-    page_content = response.content
-    page_parser = HTMLParser(page_content)
+    page_parser = HTMLParser(response.content)
     page_data = page_parser.get_page_data()
     full_check = dict(page_data, url_id=url_id, response=response.status_code)
 
