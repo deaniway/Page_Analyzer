@@ -1,6 +1,6 @@
 from flask import (
     Flask, render_template, request, flash,
-    get_flashed_messages, redirect, url_for,
+    redirect, url_for,
     abort
 )
 from dotenv import load_dotenv
@@ -45,8 +45,7 @@ def show_url_page():
     validation_error = validate_url(normal_url)
     if validation_error:
         flash(validation_error, 'danger')
-        messages = get_flashed_messages(with_categories=True)
-        return render_template('index.html', messages=messages), 422
+        return render_template('index.html'), 422
 
     existed_url = manager.get_url_by_name(normal_url)
 
@@ -67,12 +66,12 @@ def get_user():
 
 @app.get('/urls/<int:id>')
 def get_url_list(id):
-    messages = get_flashed_messages(with_categories=True)
+
     url = manager.get_url_from_urls_list(id)
     if not url:
         abort(404)
     get_checks_by_url_id = manager.get_url_from_urls_checks_list(id)
-    return render_template('list.html', messages=messages,
+    return render_template('list.html',
                            url=url, checks_list=get_checks_by_url_id)
 
 
