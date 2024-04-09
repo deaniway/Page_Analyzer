@@ -36,6 +36,6 @@ class HTMLParser:
         result = {
             'title': self.get_title(),
             'h1': self.get_h1(),
-            'content': self.get_content()
+            'desc': self.get_content()
         }
         return result

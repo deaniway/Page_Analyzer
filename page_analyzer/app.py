@@ -4,7 +4,7 @@ from flask import (
     abort
 )
 from dotenv import load_dotenv
-from page_analyzer.db import DbManager
+from page_analyzer.db import DbConnectionProcessor
 from page_analyzer.html_parser import HTMLParser
 from page_analyzer.utils import normalize_url, validate_url
 
@@ -19,7 +19,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 app.config['DATABASE_URL'] = os.getenv('DATABASE_URL')
 
-manager = DbManager(app)
+manager = DbConnectionProcessor()
 
 
 @app.errorhandler(404)
@@ -53,31 +53,31 @@ def show_url_page():
         flash('Страница уже существует', 'info')
         url_id = existed_url.id
     else:
-        url_id = manager.insert_url(normal_url).id
+        url_id = manager.add_url(normal_url).id
         flash('Страница успешно добавлена', 'success')
     return redirect(url_for('url_list', id=url_id))
 
 
 @app.get('/urls')
 def urls():
-    all_urls = manager.get_urls_list()
+    all_urls = manager.get_urls_with_code_and_last_check_date()
     return render_template('urls.html', urls=all_urls), 200
 
 
 @app.get('/urls/<int:id>')
 def url_list(id):
 
-    url = manager.get_url_from_urls_list(id)
+    url = manager.get_url(id)
     if not url:
         abort(404)
-    get_checks_by_url_id = manager.get_url_from_urls_checks_list(id)
+    get_checks_by_url_id = manager.get_all_checks_for_url(id)
     return render_template('list.html',
                            url=url, checks_list=get_checks_by_url_id)
 
 
 @app.post('/urls/<int:url_id>/check')
 def check_url(url_id):
-    url_record = manager.get_url_from_urls_list(url_id)
+    url_record = manager.get_url(url_id)
     if not url_record:
         abort(404)
 
@@ -90,10 +90,9 @@ def check_url(url_id):
 
     page_parser = HTMLParser(response.content)
     page_data = page_parser.get_page_data()
-    full_check = dict(page_data, url_id=url_id, response=response.status_code)
+    status_code = response.status_code
 
-    manager.insert_url_check(full_check)
+    manager.add_check(url_id, status_code, page_data)
     flash('Страница успешно проверена', 'success')
     return redirect(url_for('url_list', id=url_id))
 
-# пункт 4 , 5 - переименовать обработчики
