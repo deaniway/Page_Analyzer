@@ -55,17 +55,17 @@ def show_url_page():
     else:
         url_id = manager.insert_url(normal_url).id
         flash('Страница успешно добавлена', 'success')
-    return redirect(url_for('get_url_list', url_id=url_id))
+    return redirect(url_for('url_list', id=url_id))
 
 
 @app.get('/urls')
-def get_user():
+def urls():
     all_urls = manager.get_urls_list()
     return render_template('urls.html', urls=all_urls), 200
 
 
 @app.get('/urls/<int:id>')
-def get_url_list(id):
+def url_list(id):
 
     url = manager.get_url_from_urls_list(id)
     if not url:
@@ -86,7 +86,7 @@ def check_url(url_id):
         response.raise_for_status()
     except requests.exceptions.RequestException:
         flash('Произошла ошибка при проверке', 'danger')
-        return redirect(url_for('get_url_list', id=url_id, code=400))
+        return redirect(url_for('url_list', id=url_id, code=400))
 
     page_parser = HTMLParser(response.content)
     page_data = page_parser.get_page_data()
@@ -94,4 +94,6 @@ def check_url(url_id):
 
     manager.insert_url_check(full_check)
     flash('Страница успешно проверена', 'success')
-    return redirect(url_for('get_url_list', id=url_id))
+    return redirect(url_for('url_list', id=url_id))
+
+# пункт 4 , 5 - переименовать обработчики

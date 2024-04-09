@@ -79,7 +79,7 @@ class DbManager:
     def get_url_by_name(self, cursor, url):
         cursor.execute("SELECT * FROM urls WHERE name=%s", (url,))
         url_id = cursor.fetchone()
-        return url_id.id if url_id else None
+        return url_id if url_id else None
 
     @with_commit
     def get_urls_list(self, cursor):
