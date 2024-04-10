@@ -54,7 +54,7 @@ def show_url_page():
         flash('Страница уже существует', 'info')
         url_id = existed_url.id
     else:
-        url_id = manager.add_url(normal_url).id
+        url_id = manager.add_url(normal_url)
         flash('Страница успешно добавлена', 'success')
     return redirect(url_for('url_list', id=url_id))
 
