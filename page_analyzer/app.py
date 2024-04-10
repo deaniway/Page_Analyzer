@@ -62,7 +62,7 @@ def show_url_page():
 @app.get('/urls')
 def urls():
     all_urls = manager.get_urls_with_code_and_last_check_date()
-    return render_template('urls.html', urls=all_urls), 200
+    return render_template('urls/detail.html', urls=all_urls), 200
 
 
 @app.get('/urls/<int:id>')
@@ -71,7 +71,7 @@ def url_list(id):
     if not url:
         abort(404)
     get_checks_by_url_id = manager.get_all_checks_for_url(id)
-    return render_template('list.html',
+    return render_template('urls/list.html',
                            url=url, checks_list=get_checks_by_url_id)
 
 

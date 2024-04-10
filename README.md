@@ -105,7 +105,6 @@ How can I help develop a project? Submit a pull request :)
 - [x] Submit README
 - [ ] Add Сelery to make the application work asynchronously
 - [ ] Add functionality to the project
-- [ ] Add your teacher and mentor to the 'Project team' section
 
 
 
