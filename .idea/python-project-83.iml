@@ -18,6 +18,9 @@
       <excludeFolder url="file://$MODULE_DIR$/.venv/lib/python3.11/site-packages/soupsieve-2.5.dist-info" />
       <excludeFolder url="file://$MODULE_DIR$/.venv/lib/python3.11/site-packages/urllib3" />
       <excludeFolder url="file://$MODULE_DIR$/.venv/lib/python3.11/site-packages/urllib3-2.2.1.dist-info" />
+      <excludeFolder url="file://$MODULE_DIR$/.venv/lib/python3.11/site-packages/packaging-24.0.dist-info" />
+      <excludeFolder url="file://$MODULE_DIR$/.venv/lib/python3.11/site-packages/werkzeug-3.0.2.dist-info" />
+      <excludeFolder url="file://$MODULE_DIR$/dist" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.11" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
