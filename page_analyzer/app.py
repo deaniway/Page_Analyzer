@@ -3,16 +3,17 @@ from flask import (
     redirect, url_for,
     abort
 )
-from dotenv import load_dotenv
 from page_analyzer.db import DbConnectionProcessor
 from page_analyzer.html_parser import HTMLParser
 from page_analyzer.utils import normalize_url, validate_url
-
 import os
 import requests
 
-
-load_dotenv()
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except FileNotFoundError:
+    pass
 
 app = Flask(__name__)
 
@@ -29,7 +30,7 @@ def page_not_found(error):
 
 @app.errorhandler(500)
 def internal_server_error(error):
-    return render_template('errors/error500.html'), 500
+    return render_template('errors/error505.html'), 500
 
 
 @app.route('/')
@@ -66,7 +67,6 @@ def urls():
 
 @app.get('/urls/<int:id>')
 def url_list(id):
-
     url = manager.get_url(id)
     if not url:
         abort(404)
@@ -95,4 +95,3 @@ def check_url(url_id):
     manager.add_check(url_id, status_code, page_data)
     flash('Страница успешно проверена', 'success')
     return redirect(url_for('url_list', id=url_id))
-

@@ -10,9 +10,12 @@ This is a site that analyzes specified pages for SEO suitability, similar to [Pa
 
 
 #### Minimum Requirements:
- - [x] Python    
+ - [x] Python 
  - [x] Poetry
  - [x] Flask
+ - [x] PostgreSQL
+ - [x] Docker
+
 
 Page Analyzer is a full-fledged application based on the Flask framework. 
 Here the basic principles of building modern websites on MVC architecture are worked out: working with routing, 
@@ -47,13 +50,47 @@ request handlers and a template engine, interaction with the database.
 |  2   |                   Go to repository<br/>`cd python-project-83`                   |
 |  3   |         Installing the application on your computer<br/>`make install`          | 
 |  4   |                Run the command to create tables<br/>`make build`                | 
-|  5   |            To start the Flask server, use the<br/>`make dev`                    |
+|  5   |                To start the Flask server, use the<br/>`make dev`                |
 
 
 
-*Alternative installation option:* `python3 -m pip install --user git+github.com/deaniway/python-project-83.git`
 
-*P.S.* *You must have [Poetry](https://python-poetry.org) installed*
+
+### *You must have:* 
+
+- [Poetry](https://python-poetry.org) 
+
+- [Flask](https://flask.palletsprojects.com/en/3.0.x/) 
+
+- [PostgreSQL](https://www.postgresql.org/) 
+
+- [Docker](https://www.docker.com/) 
+
+
+## How to deploy a database?
+
+| Step |                        Instruction                         |
+|:----:|:----------------------------------------------------------:|
+|  1   |      Install all necessary libraries and applications      |
+|  2   | Customize the `.env` file by passing your key to variables |
+|  3   |  Deploying a docker database container<br/>`make dev-db`   | 
+|  4   |    To connect to the db use command<br/>`make enter-db`    | 
+
+*P.S.* *If for some reason it was not possible to deploy the container with the database, use this command:*
+
+```
+docker run -d \
+    --name dev_page_analyzer \
+    -e POSTGRES_USER=pguser \
+    -e POSTGRES_PASSWORD=pgpass \
+    -e POSTGRES_DB=pgdb \
+    -p 5432:5432 \
+    postgres:latest
+```
+*To connect db we use this:*
+```
+docker exec -it dev_page_analyzer psql -U pguser -d pgdb psql
+```
 
 
 
@@ -68,6 +105,7 @@ How can I help develop a project? Submit a pull request :)
 - [x] Submit README
 - [ ] Add Сelery to make the application work asynchronously
 - [ ] Add functionality to the project
+- [ ] Add your teacher and mentor to the 'Project team' section
 
 
 

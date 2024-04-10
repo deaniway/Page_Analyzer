@@ -10,12 +10,16 @@ packages = [{include = "page_analyzer"}]
 python = "^3.9"
 flask = "^3.0.2"
 gunicorn = "^21.2.0"
-flake8 = "^7.0.0"
-python-dotenv = "^1.0.1"
 psycopg2-binary = "^2.9.9"
 validators = "^0.23.2"
 requests = "^2.31.0"
 bs4 = "^0.0.2"
+
+[tool.poetry.group.dev.dependencies]
+flake8 = "^7.0.0"
+python-dotenv = "^1.0.1"
+
+
 
 
 [build-system]
