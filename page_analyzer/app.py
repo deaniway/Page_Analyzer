@@ -1,9 +1,8 @@
 from flask import (
     Flask, render_template, request, flash,
-    get_flashed_messages, redirect, url_for,
-    abort
+    redirect, url_for, abort
 )
-from dotenv import load_dotenv
+
 from page_analyzer.db import DbManager
 from page_analyzer.html_parser import HTMLParser
 from page_analyzer.utils import normalize_url, validate_url
