@@ -1,9 +1,12 @@
 ### Hexlet tests and linter status:
+
 [![Actions Status](https://github.com/deaniway/python-project-83/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/deaniway/python-project-83/actions)
 
+[![Maintainability](https://api.codeclimate.com/v1/badges/e6a8f9b0171c0b9a1b3b/maintainability)](https://codeclimate.com/github/deaniway/python-project-83/maintainability)
 
 # Page analyzer
 ## Follow the [link to view ](https://python-project-83-1-gyiq.onrender.com) my project :D
+
 
 
 This is a site that analyzes specified pages for SEO suitability, similar to [PageSpeed](https://pagespeed.web.dev/)
@@ -75,22 +78,6 @@ request handlers and a template engine, interaction with the database.
 |  2   | Customize the `.env` file by passing your key to variables |
 |  3   |  Deploying a docker database container<br/>`make dev-db`   | 
 |  4   |    To connect to the db use command<br/>`make enter-db`    | 
-
-*P.S.* *If for some reason it was not possible to deploy the container with the database, use this command:*
-
-```
-docker run -d \
-    --name dev_page_analyzer \
-    -e POSTGRES_USER=pguser \
-    -e POSTGRES_PASSWORD=pgpass \
-    -e POSTGRES_DB=pgdb \
-    -p 5432:5432 \
-    postgres:latest
-```
-*To connect db we use this:*
-```
-docker exec -it dev_page_analyzer psql -U pguser -d pgdb psql
-```
 
 
 

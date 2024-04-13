@@ -1,31 +1,15 @@
 import psycopg2
 from psycopg2.extras import NamedTupleCursor
 import datetime
-from dotenv import load_dotenv
-
-load_dotenv()
-
-
-def init_connection(app):
-    """Инициализирует соединение с базой данных, используя конфигурацию Flask."""
-    try:
-        connection = psycopg2.connect(app.config['DATABASE_URL'])
-        return connection
-    except Exception as e:
-        print('Произошла ошибка при инициализации соединения:', e)
-
-
-def get_cursor(connection):
-    """Получает курсор для выполнения запросов."""
-    return connection.cursor(cursor_factory=NamedTupleCursor)
 
 
 def execute_in_db(func):
     """Декоратор для выполнения функций соединения с базой данных."""
     def inner(*args, **kwargs):
-        with init_connection(*args, **kwargs) as conn:
-            with get_cursor(conn) as cursor:
+        with psycopg2.connect(args[0].app.config['DATABASE_URL']) as conn:
+            with conn.cursor(cursor_factory=NamedTupleCursor) as cursor:
                 result = func(cursor=cursor, *args, **kwargs)
+                conn.commit()
                 return result
     return inner
 
@@ -38,7 +22,7 @@ class DbManager:
     def with_commit(func):
         def inner(self, *args, **kwargs):
             try:
-                with init_connection(self.app) as connection:
+                with psycopg2.connect(self.app.config['DATABASE_URL']) as connection:
                     cursor = connection.cursor(cursor_factory=NamedTupleCursor)
                     result = func(self, cursor, *args, **kwargs)
                     connection.commit()
@@ -83,9 +67,15 @@ class DbManager:
 
     @with_commit
     def get_urls_list(self, cursor):
-        cursor.execute("SELECT DISTINCT ON (urls.id) urls.id AS id, url_checks.id AS check_id, "
-                       "url_checks.status_code AS status_code, url_checks.created_at AS created_at, "
-                       "urls.name AS name FROM urls LEFT JOIN url_checks ON urls.id = url_checks.url_id "
-                       "ORDER BY urls.id DESC, check_id DESC")
-        result = cursor.fetchall()
-        return result
+        query = (
+            "SELECT DISTINCT ON (urls.id) urls.id AS id, "
+            "url_checks.id AS check_id, "
+            "url_checks.status_code AS status_code, "
+            "url_checks.created_at AS created_at, "
+            "urls.name AS name "
+            "FROM urls "
+            "LEFT JOIN url_checks ON urls.id = url_checks.url_id "
+            "ORDER BY urls.id DESC, check_id DESC"
+        )
+        cursor.execute(query)
+        return cursor.fetchall()

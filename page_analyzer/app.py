@@ -51,11 +51,11 @@ def show_url_page():
     url_id = manager.get_url_by_name(normal_url)
     if url_id:
         flash('Страница уже существует', 'warning')
-        return redirect(url_for('url_list', id=url_id))
+        return redirect(url_for('get_url_list', id=url_id))
 
     url = manager.insert_url(normal_url)
     flash('Страница успешно добавлена', 'success')
-    return redirect(url_for('url_list', id=url.id))
+    return redirect(url_for('get_url_list', id=url.id))
 
 
 @app.get('/urls')
@@ -65,13 +65,13 @@ def urls():
 
 
 @app.get('/urls/<int:id>')
-def url_list(id):
+def get_url_list(id):
     url = manager.get_url_from_urls_list(id)
     if not url:
         abort(404)
-    get_checks_by_url_id = manager.get_url_from_urls_checks_list(id)
+    url_check_records = manager.get_url_from_urls_checks_list(id)
     return render_template('urls/list.html',
-                           url=url, checks_list=get_checks_by_url_id)
+                           url=url, checks_list=url_check_records)
 
 
 @app.post('/urls/<int:url_id>/check')
@@ -80,13 +80,12 @@ def check_url(url_id):
     if not url_record:
         abort(404)
 
-    url = url_record.name
     try:
-        response = requests.get(url)
+        response = requests.get(url_record.name)
         response.raise_for_status()
     except requests.exceptions.RequestException:
         flash('Произошла ошибка при проверке', 'danger')
-        return redirect(url_for('url_list', id=url_id, code=400))
+        return redirect(url_for('get_url_list', id=url_id, code=400))
 
     page_content = response.content
     page_parser = HTMLParser(page_content)
@@ -95,4 +94,4 @@ def check_url(url_id):
 
     manager.insert_url_check(full_check)
     flash('Страница успешно проверена', 'success')
-    return redirect(url_for('url_list', id=url_id))
+    return redirect(url_for('get_url_list', id=url_id))
