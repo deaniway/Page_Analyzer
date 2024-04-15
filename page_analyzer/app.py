@@ -13,7 +13,7 @@ try:
     from dotenv import load_dotenv
     load_dotenv()
 except ModuleNotFoundError:
-    print('Модуль не найден: dotenv')
+    pass
 
 app = Flask(__name__)
 
@@ -55,7 +55,7 @@ def show_url_page():
 
     url = db_manager.insert_url(normal_url)
     flash('Страница успешно добавлена', 'success')
-    return redirect(url_for('get_url_list', id=url.id), code=301)
+    return redirect(url_for('get_url_list', id=url.id))
 
 
 @app.get('/urls')
