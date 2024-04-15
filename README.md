@@ -2,7 +2,7 @@
 
 [![Actions Status](https://github.com/deaniway/python-project-83/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/deaniway/python-project-83/actions)
 
-[![Actions Status](https://github.com/deaniway/python-project-83/actions/workflows/linter.yml/badge.svg)](https://github.com/deaniway/python-project-83/actions)
+[![Actions Status](https://github.com/deaniway/python-project-83/actions/workflows/linter.yml/badge.svg)](https://github.com/deaniway/python-project-83/actions/linter.yml)
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/e6a8f9b0171c0b9a1b3b/maintainability)](https://codeclimate.com/github/deaniway/python-project-83/maintainability)
 

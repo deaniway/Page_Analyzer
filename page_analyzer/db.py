@@ -3,20 +3,20 @@ from psycopg2.extras import NamedTupleCursor
 import datetime
 
 
-def execute_in_db(func):
-    """Декоратор для выполнения функций соединения с базой данных."""
-    def inner(*args, **kwargs):
-        with psycopg2.connect(args[0].app.config['DATABASE_URL']) as conn:
-            with conn.cursor(cursor_factory=NamedTupleCursor) as cursor:
-                result = func(cursor=cursor, *args, **kwargs)
-                conn.commit()
-                return result
-    return inner
-
-
 class DbManager:
     def __init__(self, app):
         self.app = app
+
+    @staticmethod
+    def execute_in_db(func):
+        """Декоратор для выполнения функций соединения с базой данных."""
+        def inner(*args, **kwargs):
+            with psycopg2.connect(args[0].app.config['DATABASE_URL']) as conn:
+                with conn.cursor(cursor_factory=NamedTupleCursor) as cursor:
+                    result = func(cursor=cursor, *args, **kwargs)
+                    conn.commit()
+                    return result
+        return inner
 
     @staticmethod
     def with_commit(func):
@@ -47,26 +47,26 @@ class DbManager:
                        "VALUES (%s, %s, %s, %s, %s, %s)",
                        (check['url_id'], date, check['response'], check["h1"], check['title'], check['content']))
 
-    @with_commit
-    def get_url_from_urls_list(self, cursor, url_id):
+    @execute_in_db
+    def get_url_from_urls_list(self, url_id, cursor=None):
         cursor.execute("SELECT * FROM urls WHERE id=%s", (url_id,))
         desired_url = cursor.fetchone()
         return desired_url if desired_url else False
 
-    @with_commit
-    def get_url_from_urls_checks_list(self, cursor, url_id):
+    @execute_in_db
+    def get_url_from_urls_checks_list(self, url_id, cursor=None):
         cursor.execute("SELECT * FROM url_checks WHERE url_id=%s ORDER BY id DESC", (url_id,))
         result = cursor.fetchall()
         return result
 
-    @with_commit
-    def get_url_by_name(self, cursor, url):
+    @execute_in_db
+    def get_url_by_name(self, url, cursor=None):
         cursor.execute("SELECT * FROM urls WHERE name=%s", (url,))
         url_id = cursor.fetchone()
         return url_id.id if url_id else None
 
-    @with_commit
-    def get_urls_list(self, cursor):
+    @execute_in_db
+    def get_urls_list(self, cursor=None):
         query = (
             "SELECT DISTINCT ON (urls.id) urls.id AS id, "
             "url_checks.id AS check_id, "
