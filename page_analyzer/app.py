@@ -50,12 +50,12 @@ def show_url_page():
 
     url_id = db_manager.get_url_by_name(normal_url)
     if url_id:
-        flash('Страница уже существует', 'warning')
+        flash('Страница уже существует🙈', 'warning')
         return redirect(url_for('get_url_list', id=url_id))
 
     url = db_manager.insert_url(normal_url)
     flash('Страница успешно добавлена', 'success')
-    return redirect(url_for('get_url_list', id=url_id))
+    return redirect(url_for('get_url_list', id=url.id))
 
 
 @app.get('/urls')
