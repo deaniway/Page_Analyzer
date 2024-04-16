@@ -48,25 +48,25 @@ class DbManager:
                        (check['url_id'], date, check['response'], check["h1"], check['title'], check['content']))
 
     @execute_in_db
-    def get_url_from_urls_list(self, url_id, cursor=None):
+    def get_url_from_urls_list(self, url_id, cursor):
         cursor.execute("SELECT * FROM urls WHERE id=%s", (url_id,))
         desired_url = cursor.fetchone()
         return desired_url if desired_url else False
 
     @execute_in_db
-    def get_url_from_urls_checks_list(self, url_id, cursor=None):
+    def get_url_from_urls_checks_list(self, url_id, cursor):
         cursor.execute("SELECT * FROM url_checks WHERE url_id=%s ORDER BY id DESC", (url_id,))
         result = cursor.fetchall()
         return result
 
     @execute_in_db
-    def get_url_by_name(self, url, cursor=None):
+    def get_url_by_name(self, url, cursor):
         cursor.execute("SELECT * FROM urls WHERE name=%s", (url,))
         url_id = cursor.fetchone()
         return url_id.id if url_id else None
 
     @execute_in_db
-    def get_urls_list(self, cursor=None):
+    def get_urls_list(self, cursor):
         query = (
             "SELECT DISTINCT ON (urls.id) urls.id AS id, "
             "url_checks.id AS check_id, "
