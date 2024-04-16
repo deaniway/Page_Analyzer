@@ -55,7 +55,7 @@ def show_url_page():
 
     url = db_manager.insert_url(normal_url)
     flash('Страница успешно добавлена', 'success')
-    return redirect(url_for('get_url_list', id=url.id))
+    return redirect(url_for('get_url_list', id=url_id))
 
 
 @app.get('/urls')
