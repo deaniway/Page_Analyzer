@@ -51,7 +51,7 @@ request handlers and a template engine, interaction with the database.
 
 | Step |                                   Instruction                                   |
 |:----:|:-------------------------------------------------------------------------------:|
-|  1   | Clone he repository to your PC:<br/>`github.com/deaniway/python-project-83.git` |
+|  1   | Clone he repository to your PC:<br/>`github.com/deaniway/Page_Analyzer.git` |
 |  2   |                   Go to repository<br/>`cd python-project-83`                   |
 |  3   |         Installing the application on your computer<br/>`make install`          | 
 |  4   |                Run the command to create tables<br/>`make build`                | 
